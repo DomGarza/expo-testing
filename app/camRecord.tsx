@@ -1,5 +1,5 @@
 import { StyleSheet, View, Text } from 'react-native';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { CameraView, CameraType, useCameraPermissions, VideoQuality, CameraMode } from 'expo-camera';
 import { Screen } from '../constants/Theme';
 import { Video, ResizeMode } from 'expo-av';
@@ -13,10 +13,23 @@ const CamRecord = () => {
   const cameraRef = useRef(null); 
   const router = useRouter()
   const navigation = useNavigation();
-  const [facing, setFacing] = useState<CameraType>('back');
-  const [videoQuality, setVideoQuality] = useState<VideoQuality>('1080p')
-  const [CameraMode, setCameraMode] = useState<CameraMode>('video');
+  const [facing, setFacing] = useState('back');
+  const [videoQuality, setVideoQuality] = useState('1080p')
+  const [CameraMode, setCameraMode] = useState('picture');
 
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setCameraMode('video');
+    }, 100);
+
+    return () => clearTimeout(timer); 
+  }, []);
+
+  const redo = () => {
+    setVideoUri(null);
+    setCameraMode('picture');
+  };
 
   if (cameraPermission === null) {
     return <View style={styles.container}><Text>Loading...</Text></View>;
@@ -30,6 +43,7 @@ const CamRecord = () => {
       </View>
     );
   }
+
 
   const startRecording = async () => {
     if (cameraRef.current) {
@@ -100,7 +114,7 @@ const CamRecord = () => {
 
       {videoUri && (
         <Text 
-          onPress={() => setVideoUri(null)} 
+          onPress={redo} 
           style={{ fontSize: Screen.h * 0.07, alignSelf: 'center', marginTop: Screen.h * .2, color: 'white', fontWeight: '900' }}
         >
           Record Again
