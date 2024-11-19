@@ -1,3 +1,4 @@
+import react, {useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Screen } from '../constants/Theme';
 import { useRouter, router} from 'expo-router';
@@ -5,7 +6,14 @@ import { useRouter, router} from 'expo-router';
 
 export default function HomeScreen() {
 
+  const [example, setExample] = useState(true);
 
+  useEffect(() => {
+    setExample(false);
+  }, []); 
+
+useEffect(() => {
+}, [] );
 
 const camRecordNav = () => {
   router.push({

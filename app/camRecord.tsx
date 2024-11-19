@@ -4,7 +4,6 @@ import { CameraView, CameraType, useCameraPermissions, VideoQuality, CameraMode 
 import { Screen } from '../constants/Theme';
 import { Video, ResizeMode } from 'expo-av';
 import { useNavigation, useRouter  } from 'expo-router';
-import * as MediaLibrary from 'expo-media-library';
 
 const CamRecord = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -60,6 +59,8 @@ const CamRecord = () => {
     }
   };
 
+
+
   return (
     <View style={{ flex: 1 }}>
 
@@ -93,6 +94,7 @@ const CamRecord = () => {
           resizeMode={ResizeMode.CONTAIN}
           useNativeControls
           shouldPlay
+          isLooping
         />
       )}
 
