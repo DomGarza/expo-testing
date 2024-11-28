@@ -17,7 +17,7 @@ useEffect(() => {
 
 const camRecordNav = () => {
   router.push({
-    pathname: '/camRecord',
+    pathname: '/CamRecord',
   });
 };
 
@@ -25,7 +25,13 @@ const camRecordNav = () => {
 
   return (
     <View style={{height: Screen.h, width: Screen.w, alignItems: 'center' }}>
-      <Text onPress={camRecordNav}style={{fontSize: Screen.h * .025, fontWeight: '700', top: Screen.h * .1}}>Camera Recording Test</Text>
+      <Text onPress={camRecordNav}style={{fontSize: Screen.h * .035, width: Screen.w * .8, textAlign: 'center', fontWeight: '700', top: Screen.h * .1}}>Video Recording & Playback</Text>
+      <Text style={{fontSize: Screen.h * .0225, fontWeight: '200', top: Screen.h * .12, textDecorationLine: 'underline'}}>expo-camera</Text>
+      <Text style={{fontSize: Screen.h * .0225, fontWeight: '200', top: Screen.h * .125,  textDecorationLine: 'underline'}}>expo-video</Text>
+      {/* <Text style={{fontSize: Screen.h * .02, fontWeight: '700', top: Screen.h * .17}}>Full Code</Text>
+      <Text style={{fontSize: Screen.h * .02, fontWeight: '700', top: Screen.h * .22}}>Community</Text> */}
+
+
       </View>
   );
 }

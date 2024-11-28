@@ -1,48 +1,30 @@
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, Button } from 'react-native';
 import React, { useRef, useState, useEffect } from 'react';
-import { CameraView, CameraType, useCameraPermissions, VideoQuality, CameraMode } from 'expo-camera';
+import { CameraView, CameraType, useCameraPermissions, VideoQuality, CameraMode, FlashMode } from 'expo-camera';
 import { Screen } from '../constants/Theme';
-import { Video, ResizeMode } from 'expo-av';
 import { useNavigation, useRouter  } from 'expo-router';
+import { useVideoPlayer, VideoView, createVideoPlayer } from 'expo-video';
+import { useEvent } from 'expo';
+
+
 
 const CamRecord = () => {
-  const [isRecording, setIsRecording] = useState(false);
-  const [videoUri, setVideoUri] = useState(null);
-  const [flashOn, setFlashOn] = useState(false);
-  const [cameraPermission, requestPermission] = useCameraPermissions();
-  const cameraRef = useRef(null); 
   const router = useRouter()
   const navigation = useNavigation();
-  const [facing, setFacing] = useState('back');
-  const [videoQuality, setVideoQuality] = useState('1080p')
-  const [CameraMode, setCameraMode] = useState('picture');
 
+  const [isRecording, setIsRecording] = useState(false);
+  const [videoUri, setVideoUri] = useState(null);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setCameraMode('video');
-    }, 100);
+  const [cameraPermission, requestPermission] = useCameraPermissions();
+  const cameraRef = useRef(null); 
 
-    return () => clearTimeout(timer); 
-  }, []);
+  const [flashOn, setFlashOn] = useState<FlashMode>('off');
+  const [facing, setFacing] = useState<CameraType>('back');
+  const [videoQuality, setVideoQuality] = useState<VideoQuality>('1080p')
+  const [CameraMode, setCameraMode] = useState<CameraMode>('video');
 
-  const redo = () => {
-    setVideoUri(null);
-    setCameraMode('picture');
-  };
+  
 
-  if (cameraPermission === null) {
-    return <View style={styles.container}><Text>Loading...</Text></View>;
-  }
-
-  if (!cameraPermission.granted) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.message}>We need your permission to use the camera</Text>
-        <Text onPress={requestPermission} style={styles.permissionButton}>Grant Permission</Text>
-      </View>
-    );
-  }
 
 
   const startRecording = async () => {
@@ -65,6 +47,7 @@ const CamRecord = () => {
     }
   };
 
+
   const stopRecording = () => {
     if (cameraRef.current) {
       console.log('Stop recording');
@@ -73,6 +56,26 @@ const CamRecord = () => {
     }
   };
 
+
+  const redo = () => {
+    setVideoUri(null);
+  };
+
+
+  const videoSource =
+  videoUri;
+
+
+  const player = useVideoPlayer(videoSource, player => {
+    player.loop = false;
+    player.muted = true;
+  });
+
+
+
+ useEffect (() => {
+     player.play();
+ },[videoUri] );
 
 
   return (
@@ -100,7 +103,7 @@ const CamRecord = () => {
           </Text>
         </CameraView>
       )}
-
+{/* 
       {videoUri && (
         <Video
           source={{ uri: videoUri }}
@@ -110,7 +113,15 @@ const CamRecord = () => {
           shouldPlay
           isLooping
         />
-      )}
+      )} */}
+
+{videoUri && (
+
+<View style={styles.contentContainer}>
+<VideoView style={styles.video} player={player} nativeControls={false}  />
+
+</View>      )}
+
 
       {videoUri && (
         <Text 
@@ -138,6 +149,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'blue',
   },
+  contentContainer: {
+    flex: 1,
+    padding: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 50,
+  },
+  video: {
+    width: 350,
+    height: 275,
+  },
+  controlsContainer: {
+    padding: 10,
+  },
 });
+
+
 
 export default CamRecord;

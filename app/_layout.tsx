@@ -16,7 +16,7 @@ export default function Layout() {
 
 
 <Stack.Screen
-        name="camRecord"
+        name="CamRecord"
         options={{
         headerShown: false,
         animation: 'none',
