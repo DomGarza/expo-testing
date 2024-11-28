@@ -4,7 +4,6 @@ import { CameraView, CameraType, useCameraPermissions, VideoQuality, CameraMode,
 import { Screen } from '../constants/Theme';
 import { useNavigation, useRouter  } from 'expo-router';
 import { useVideoPlayer, VideoView, createVideoPlayer } from 'expo-video';
-import { useEvent } from 'expo';
 
 
 
@@ -16,8 +15,7 @@ const CamRecord = () => {
   const [videoUri, setVideoUri] = useState(null);
 
   const [cameraPermission, requestPermission] = useCameraPermissions();
-  const cameraRef = useRef(null); 
-
+  const cameraRef = useRef<any>(); 
   const [flashOn, setFlashOn] = useState<FlashMode>('off');
   const [facing, setFacing] = useState<CameraType>('back');
   const [videoQuality, setVideoQuality] = useState<VideoQuality>('1080p')
@@ -67,8 +65,8 @@ const CamRecord = () => {
 
 
   const player = useVideoPlayer(videoSource, player => {
-    player.loop = false;
-    player.muted = true;
+    player.loop = true;
+    player.muted = false;
   });
 
 
@@ -78,61 +76,71 @@ const CamRecord = () => {
  },[videoUri] );
 
 
-  return (
-    <View style={{ flex: 1 }}>
-
-      {!videoUri && (
-        <CameraView
-          ref={cameraRef}
-          style={{ flex: 1, zIndex: 1 }}
-          facing={facing}
-          mode={CameraMode}
-          videoQuality={videoQuality}
+ return (
+  <View style={{ flex: 1 }}>
+    {!videoUri && (
+      <CameraView
+        ref={cameraRef}
+        style={{ flex: 1, zIndex: 1 }}
+        facing={facing}
+        mode={CameraMode}
+        videoQuality={videoQuality}
+      >
+        <Text
+          onPress={isRecording ? stopRecording : startRecording}
+          style={{
+            fontSize: Screen.h * 0.07,
+            alignSelf: 'center',
+            marginTop: Screen.h * 0.2,
+            color: 'white',
+            fontWeight: '900',
+          }}
         >
-          <Text 
-            onPress={isRecording ? stopRecording : startRecording} 
-            style={{ fontSize: Screen.h * 0.07, alignSelf: 'center', marginTop: Screen.h * .2, color: 'white', fontWeight: '900' }}
-            >
-            {isRecording ? 'Stop Recording' : 'Record Video'}
-          </Text>
-          <Text 
-            onPress={navigation.goBack} 
-            style={{ fontSize: Screen.h * 0.07, alignSelf: 'center', marginTop: Screen.h * .2, color: 'white', fontWeight: '900' }}
-            >
-              Go Back
-          </Text>
-        </CameraView>
-      )}
-{/* 
-      {videoUri && (
-        <Video
-          source={{ uri: videoUri }}
-          style={{ flex: 1, position: 'absolute', zIndex: 0, height: Screen.h, width: Screen.w }}
-          resizeMode={ResizeMode.CONTAIN}
-          useNativeControls
-          shouldPlay
-          isLooping
-        />
-      )} */}
-
-{videoUri && (
-
-<View style={styles.contentContainer}>
-<VideoView style={styles.video} player={player} nativeControls={false}  />
-
-</View>      )}
-
-
-      {videoUri && (
-        <Text 
-          onPress={redo} 
-          style={{ fontSize: Screen.h * 0.07, alignSelf: 'center', marginTop: Screen.h * .2, color: 'white', fontWeight: '900' }}
-        >
-          Record Again
+          {isRecording ? 'Stop Recording' : 'Record Video'}
         </Text>
-      )}
-    </View>
-  );
+
+        <Text
+          onPress={navigation.goBack}
+          style={{
+            fontSize: Screen.h * 0.07,
+            alignSelf: 'center',
+            marginTop: Screen.h * 0.2,
+            color: 'white',
+            fontWeight: '900',
+          }}
+        >
+          Go Back
+        </Text>
+      </CameraView>
+    )}
+
+    {videoUri && (
+      <View style={styles.contentContainer}>
+        <VideoView
+          style={styles.video}
+          player={player}
+          nativeControls={false}
+        />
+      </View>
+    )}
+
+    {videoUri && (
+      <Text
+        onPress={redo}
+        style={{
+          fontSize: Screen.h * 0.07,
+          alignSelf: 'center',
+          marginTop: Screen.h * 0.2,
+          color: 'white',
+          fontWeight: '900',
+        }}
+      >
+        Record Again
+      </Text>
+    )}
+  </View>
+);
+
 };
 
 const styles = StyleSheet.create({
